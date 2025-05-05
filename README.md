@@ -4,7 +4,7 @@
 
 <!-- Logo on the right -->
 <p align="left">
-  <img align="right" src="blastar_2000.png" alt="blastar logo" width="450" />
+  <img align="right" src="blastar_2000.png" alt="blastar logo" width="750" />
   <h1>blastar</h1>
  <p><strong>Fast retrieval, alignment &amp; phylogenetic-tree construction for NCBI sequences in R</strong></p>
   <p>

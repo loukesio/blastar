@@ -1,0 +1,263 @@
+#' Fetch Metadata (and optionally sequence ranges) from NCBI
+#'
+#' @param accessions  Character vector of accession numbers.
+#' @param db          Either "nuccore" or "protein".
+#' @param seq_range   Either:
+#'   - NULL (default): fetch full sequence for every accession
+#'   - numeric(2):   fetch that same start–end for *all* accessions
+#'   - named list:   each element is a numeric(2) vector, names are accessions;
+#'                   will fetch only that slice for the named accession,
+#'                   full sequence for others.
+#'
+#' @return A tibble with columns
+#'   `accession`, `accession_version`, `title`, `organism`, `sequence`
+#' @importFrom rentrez entrez_search entrez_summary entrez_fetch
+#' @importFrom dplyr bind_rows
+#' @importFrom tibble tibble
+#' @export
+fetch_metadata <- function(accessions,
+                           db = c("nuccore", "protein"),
+                           seq_range = NULL) {
+  db <- match.arg(db)
+  if (!requireNamespace("rentrez", quietly = TRUE))
+    stop("Please install the 'rentrez' package.")
+
+  ## Helper: validate a single range vector
+  is_valid_range <- function(x) {
+    is.numeric(x) && length(x) == 2 && all(x > 0) && x[1] < x[2]
+  }
+
+  ## If seq_range is a single numeric, apply to all later
+  global_range <- NULL
+  per_accession_ranges <- NULL
+
+  if (!is.null(seq_range)) {
+    if (is.numeric(seq_range)) {
+      if (!is_valid_range(seq_range))
+        stop("If numeric, `seq_range` must be c(start, end) with start < end.")
+      global_range <- as.integer(seq_range)
+    } else if (is.list(seq_range)) {
+      # must be named
+      if (is.null(names(seq_range)) || any(names(seq_range) == ""))
+        stop("When list, `seq_range` must be a named list, names matching accessions.")
+      # validate each element
+      bad <- names(seq_range)[!vapply(seq_range, is_valid_range, logical(1))]
+      if (length(bad))
+        stop("Invalid ranges for: ", paste(bad, collapse = ", "))
+      # only keep those names that are actually in accessions
+      per_accession_ranges <- lapply(seq_range, as.integer)
+    } else {
+      stop("`seq_range` must be NULL, a numeric(2), or a named list of numeric(2).")
+    }
+  }
+
+  ## Main loop
+  out <- lapply(accessions, function(acc) {
+    tryCatch({
+      # 1) UID lookup
+      sr <- rentrez::entrez_search(db = db, term = acc)
+      if (length(sr$ids) == 0) {
+        warning("No UID for ", acc); return(NULL)
+      }
+      uid <- sr$ids[[1]]
+
+      # 2) Metadata
+      sm <- rentrez::entrez_summary(db = db, id = uid)
+
+      # 3) Decide which range to use
+      this_range <- NULL
+      if (!is.null(global_range)) {
+        this_range <- global_range
+      } else if (!is.null(per_accession_ranges) && !is.null(per_accession_ranges[[acc]])) {
+        this_range <- per_accession_ranges[[acc]]
+      }
+
+      # 4) Fetch FASTA
+      fetch_args <- list(db = db, id = uid, rettype = "fasta", retmode = "text")
+      if (!is.null(this_range)) {
+        fetch_args$seq_start <- this_range[1]
+        fetch_args$seq_stop  <- this_range[2]
+      }
+      fasta <- do.call(rentrez::entrez_fetch, fetch_args)
+
+      # strip header + newlines
+      lines <- strsplit(fasta, "\n", fixed = TRUE)[[1]]
+      seq   <- paste(lines[-1], collapse = "")
+
+      tibble::tibble(
+        accession         = acc,
+        accession_version = sm$accessionversion,
+        title             = sm$title,
+        organism          = sm$organism,
+        sequence          = seq
+      )
+    }, error = function(e) {
+      warning("Error for ", acc, ": ", e$message)
+      NULL
+    })
+  })
+
+  dplyr::bind_rows(out)
+}
+
+
+# 1) Default: full length for every accession
+fetch_metadata(c("NM_001301717","NM_001301718"), db="nuccore")
+
+# 2) Same sub‐range (100–300) for all
+fetch_metadata(c("NM_001301717","NM_001301718"),
+               db="nuccore",
+               seq_range = c(100,300))
+
+# 3) Per‐accession: only slice for the first accession
+fetch_metadata(
+  c("NM_001301717","NM_001301718"),
+  db = "nuccore",
+  seq_range = list(
+    "NM_001301717" = c(50,150)
+  )
+)
+# → NM_001301717 yields positions 50–150; NM_001301718 yields full record
+
+
+#' Align DNA Sequences (Pairwise or Multiple)
+#'
+#' This function takes a tibble with a "sequence" column (and optional "accession" names)
+#' and performs either a pairwise alignment between two sequences or a multiple sequence
+#' alignment (MSA) across all.
+#'
+#' @param df A tibble or data.frame containing at least:
+#'   - `sequence`: character vector of DNA sequences
+#'   - `accession` (optional): names for each sequence; if present, they will be
+#'      used as identifiers in the alignment object.
+#' @param method One of:
+#'   - "pairwise": perform a pairwise alignment between two sequences
+#'   - "msa": perform a multiple sequence alignment on all sequences
+#' @param pairwise_type For pairwise only, alignment type: "global" (Needleman–Wunsch),
+#'   "local" (Smith–Waterman), or "overlap".
+#' @param msa_method For MSA only, method name: "ClustalOmega", "ClustalW", or "Muscle".
+#' @param seq_indices Integer vector of length 2; indices of the two sequences to align when
+#'   `method = "pairwise"`. Defaults to `c(1,2)`.
+#'
+#' @return If `method="pairwise"`, a list with:
+#'   - `alignment`: a `PairwiseAlignmentsSingleSubject` object
+#'   - `pid`: percent identity (numeric)
+#'   If `method="msa"`, an object of class `MsaDNAMultipleAlignment` or similar.
+#'
+#' @examples
+#' # Assuming `meta` is your tibble with a `sequence` column:
+#' # df <- tibble::tibble(
+#' #   accession = c("seq1", "seq2", "seq3"),
+#' #   sequence  = c("ATGC...", "AT-C...", "ATGG...")
+#' # )
+#'
+#' # Pairwise global alignment of first two:
+#' # res_pw <- align_sequences(df, method = "pairwise", pairwise_type = "global")
+#' # res_pw$alignment; res_pw$pid
+#'
+#' # Multiple alignment of all sequences:
+#' # res_msa <- align_sequences(df, method = "msa", msa_method = "ClustalOmega")
+#' # print(res_msa)
+#'
+#' @importFrom Biostrings DNAStringSet pairwiseAlignment pid
+#' @importFrom msa msa
+#' @export
+align_sequences <- function(df,
+                            method = c("pairwise", "msa"),
+                            pairwise_type = "global",
+                            msa_method = "ClustalOmega",
+                            seq_indices = c(1,2)) {
+  method <- match.arg(method)
+
+  if (!"sequence" %in% names(df)) {
+    stop("Input data must have a 'sequence' column.")
+  }
+
+  # Convert to DNAStringSet
+  seqs <- Biostrings::DNAStringSet(df$sequence)
+  if ("accession" %in% names(df)) {
+    names(seqs) <- df$accession
+  }
+
+  if (method == "pairwise") {
+    # Ensure two indices
+    if (length(seq_indices) != 2) {
+      stop("`seq_indices` must be length 2 for pairwise alignment.")
+    }
+
+    s1 <- seqs[[seq_indices[1]]]
+    s2 <- seqs[[seq_indices[2]]]
+
+    aln <- Biostrings::pairwiseAlignment(s1, s2, type = pairwise_type)
+    pid_val <- Biostrings::pid(aln)
+
+    return(list(
+      alignment = aln,
+      pid       = pid_val
+    ))
+
+  } else {
+    # Multiple sequence alignment
+    msa_aln <- msa::msa(seqs, method = msa_method)
+    return(msa_aln)
+  }
+}
+
+
+
+# 3) Make a tiny test dataset (e.g. two simple sequences)
+test_df <- tibble(
+  accession = c("seq1","seq2"),
+  sequence  = c("ATGGCCTTAA",
+                "ATGCCTTGGAA")   # identical length, no gaps
+)
+
+test_df
+
+# 4a) Pairwise global alignment of the two sequences
+pw_res <- align_sequences(
+  df            = test_df,
+  method        = "pairwise",
+  pairwise_type = "global",
+  seq_indices   = c(1,2)
+)
+# Inspect the alignment object
+pw_res$alignment
+# See the aligned sequences with gaps
+alignedPattern(pw_res$alignment)
+alignedSubject(pw_res$alignment)
+# Percent identity
+pw_res$pid
+
+# 4b) Multiple sequence alignment (here only two, but it works the same)
+msa_res <- align_sequences(
+  df         = test_df,
+  method     = "msa",
+  msa_method = "ClustalOmega"
+)
+# Print the MSA
+print(msa_res, show="alignment")
+
+#' Build a Neighbor-Joining tree from a multiple sequence alignment
+#'
+#' This function takes a Multiple Sequence Alignment (MSA) object (e.g., output of
+#' `align_sequences(method = "msa")`) and generates a Neighbor-Joining (NJ) tree.
+#'
+#' @param msa A multiple alignment object (class `MsaDNAMultipleAlignment` or similar)
+#' @param model Evolutionary model for distance calculation passed to `ape::dist.dna`
+#'              (e.g., "raw", "JC69", "K80", etc.)
+#' @param pairwise.deletion Logical. If TRUE, compute distances with pairwise deletion
+#' @return An object of class `phylo` (NJ tree)
+#' @importFrom ape as.DNAbin dist.dna nj
+#' @export
+build_nj_tree <- function(msa, model = "raw", pairwise.deletion = TRUE) {
+  # Convert MSA to DNAbin
+  aln_bin <- ape::as.DNAbin(msa)
+  # Compute distance matrix
+  dist_mat <- ape::dist.dna(aln_bin, model = model, pairwise.deletion = pairwise.deletion)
+  # Build NJ tree
+  nj_tree <- ape::nj(dist_mat)
+  return(nj_tree)
+}
+
+

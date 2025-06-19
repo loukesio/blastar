@@ -7,3 +7,5 @@
 ^\.git$               # Ignore the entire Git directory
 ^\.github$            # Ignore GitHub Actions and other configs
 ^\.Rcheck$            # Ignore R CMD check output
+^CRAN-SUBMISSION$
+^cran-comments\.md$

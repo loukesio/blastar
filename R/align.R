@@ -66,8 +66,8 @@ align_sequences <- function(df,
     s1 <- seqs[[seq_indices[1]]]
     s2 <- seqs[[seq_indices[2]]]
 
-    aln <- Biostrings::pairwiseAlignment(s1, s2, type = pairwise_type)
-    pid_val <- Biostrings::pid(aln)
+    aln <- pwalign::pairwiseAlignment(s1, s2, type = pairwise_type)
+    pid_val <- pwalign::pid(aln)
 
     return(list(
       alignment = aln,

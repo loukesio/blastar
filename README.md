@@ -2,6 +2,9 @@
 [![CRAN version](https://img.shields.io/cran/v/blastar.svg)](https://cran.r-project.org/package=blastar)  [![R-CMD-check](https://github.com/loukesio/blastar/actions/workflows/r.yml/badge.svg?branch=main)](https://github.com/loukesio/blastar/actions/workflows/r.yml)  [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Install the `blastr` package
+
+*The name **blastar** comes from the Greek word [βλαστάρι](https://el.wiktionary.org/wiki/βλαστάρι), which stands for the fresh, tender shoot of a plant. It evokes the idea of growth, branching, and organic evolution — all essential metaphors for phylogenetic exploration.*
+
 Install the package using the following commands   <img align="right" src="blastar_2000.png" alt="blastar logo" width="550" />
 
 ```r

@@ -1,5 +1,5 @@
 
-[![CRAN version](https://img.shields.io/cran/v/blastar.svg)](https://cran.r-project.org/package=blastar)  [![R-CMD-check](https://github.com/loukesio/blastar/actions/workflows/r.yml/badge.svg?branch=main)](https://github.com/loukesio/blastar/actions/workflows/r.yml)  [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![CRAN version](https://img.shields.io/cran/v/blastar.svg)](https://cran.r-project.org/package=blastar) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Install the `blastr` package
 

@@ -17,9 +17,9 @@ install.packages("devtools")
 library(devtools)
 
 # then you can install the dev version of the ltc
-devtools::install_github("loukesio/blastr")
+devtools::install_github("loukesio/blastar")
 # and load it
-library(blastr)
+library(blastar)
 ```
 
 <br>

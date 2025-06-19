@@ -1,78 +1,56 @@
-# blastar
 
-<!-- README.md for blastar -->
+[![CRAN version](https://img.shields.io/cran/v/blastar.svg)](https://cran.r-project.org/package=blastar)  
+[![R-CMD-check](https://github.com/loukesio/blastar/actions/workflows/r.yml/badge.svg?branch=main)](https://github.com/loukesio/blastar/actions/workflows/r.yml)  
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-<!-- Logo on the right -->
-<p align="left">
-  <img align="right" src="blastar_2000.png" alt="blastar logo" width="750" />
-  <h1>blastar</h1>
- <p><strong>Fast retrieval, alignment &amp; phylogenetic-tree construction for NCBI sequences in R</strong></p>
-  <p>
-    <a href="https://cran.r-project.org/package=blastar"><img src="https://img.shields.io/cran/v/blastar.svg" alt="CRAN version"/></a>
-    <a href="https://github.com/yourusername/blastar/actions"><img src="https://img.shields.io/github/actions/workflow/status/yourusername/blastar/ci.yml?branch=main" alt="CI status"/></a>
-    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"/></a>
-  </p>
-</p>
+## Install the `blastr` package
+Install the package using the following commands   <img align="right" src="blastar_2000.png" alt="blastar logo" width="70=50" />
 
----
+```r
+# for now, you can install the developmental version of ltc
+# first you need to install the devtools package 
+# in case you have not already installed
+install.packages("devtools") 
+# and load it
+library(devtools)
 
-## 🚀 Features
+# then you can install the dev version of the ltc
+devtools::install_github("loukesio/blastr")
+# and load it
+library(blastr)
+```
+
+<br>
+
+
+### How do I start?
+Load the library and explore the example datasets! 
+
+**Fast retrieval, alignment & phylogenetic-tree construction for NCBI sequences in R**
+
+
+
+ 
+### 🚀 Features
 
 - **NCBI Sequence Retrieval**  
-  Fetch FASTA sequences &amp; descriptions via `rentrez` by accession number.
-- **Flexible Alignments**  
+  Retrieve FASTA sequences and metadata directly from NCBI using accession numbers.
+- **Flexible Alignment Options**  
   - **Pairwise** with `Biostrings::pairwiseAlignment()`  
   - **Multiple** with `DECIPHER::AlignSeqs()` or `msa::msaClustalOmega()`
-- **Phylogenetic Trees**  
-  Build &amp; visualize trees (NJ, UPGMA, ML) via `ape`, `phangorn` &amp; `ggtree`.
-- **Batch & Parallel**  
-  Process hundreds of accessions in parallel (via `future`/`furrr`).
-- **Caching & Resume**  
-  Local cache of downloaded sequences; resume interrupted analyses seamlessly.
-- **Export Formats**  
-  Write alignments &amp; trees as FASTA, Clustal, NEXUS, Newick or PDF.
-- **Publication-Quality Graphics**  
-  Ready-to-publish plots with `ggtree`, `ggplot2` &amp; alignment highlights.
+- **Phylogenetic Tree Construction**  
+  Build and visualize NJ, UPGMA, and ML trees with `ape`, `phangorn`, and `ggtree`.
+- **Batch & Parallel Processing**  
+  Accelerate large jobs with parallel execution using `furrr`.
+- **Resume & Caching**  
+  Seamlessly continue interrupted downloads with local caching.
+- **Export Options**  
+  Output results in FASTA, Clustal, NEXUS, Newick, and high-res PDF.
+- **Publication-Quality Plots**  
+  Elegant tree visualizations and annotated alignments with `ggplot2` and `ggtree`.
 
----
 
-## 🔧 Installation
 
-From CRAN:
 
 ```r
 install.packages("blastar")
-```
-
-library(blastar)
-
-## 1. Retrieve sequences
-acc <- c("NC_000852", "NC_001422")
-records <- fetch_sequences(acc, email="you@example.com")
-
-## 2. Pairwise alignment
-pw_aln <- align_pairwise(records[[1]], records[[2]])
-
-## 3. Multiple sequence alignment
-msa <- align_multiple(records, method="ClustalOmega", nthreads=4)
-
-## 4. Build & plot tree
-tree <- build_tree(msa, method="NJ", bootstrap=100)
-plot_tree(tree, file="my_tree.pdf")
-
-
-🤝 Contributing
-Fork it: https://github.com/yourusername/blastar/fork
-
-Create a branch: git checkout -b feature/fooBar
-
-Commit: git commit -m "Add fooBar"
-
-Push: git push origin feature/fooBar
-
-Open a PR!
-
-Please follow our CONTRIBUTING.md & CODE_OF_CONDUCT.md.
-
-
-

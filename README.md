@@ -23,30 +23,116 @@ library(blastr)
 
 <br>
 
+## Explaining the functions 
 
-### How do I start?
-Load the library and explore the example datasets! 
+### 1.`fetch_metadata` allows fast retrieval of data from NCBI
 
-**Fast retrieval, alignment & phylogenetic-tree construction for NCBI sequences in R**
+You can control whether you download the **full sequence** or just a **specific part** using the `seq_range` argument in `fetch_metadata()`:
+
+**1.1. Download the full sequence (default)**  
+
+   ```r
+   fetch_metadata(c("NM_001301717", "NM_001301718"), db = "nuccore") #Fetches the entire sequence for each accession.
+   ```
 
 
+**1.2. Download the same range (e.g., bases 100–300) for all accessions**
+   Use a numeric vector of length 2.
 
+   ```r
+   fetch_metadata(
+     accessions = c("NM_001301717", "NM_001301718"),
+     db = "nuccore",
+     seq_range = c(100, 300)
+   )
+   ```
+
+**1.3. Download a custom range for each accession**
+   Use a named list where each element is a range for one accession.
+
+   ```r
+   fetch_metadata(
+     accessions = c("NM_001301717", "NM_001301718"),
+     db = "nuccore",
+     seq_range = list(
+       "NM_001301717" = c(50, 150),
+       "NM_001301718" = c(200, 400)
+     )
+   )
+   ```
+<sup>Created on 2025-06-19 with [reprex v2.1.1](https://reprex.tidyverse.org)</sup>
+
+If an accession is not listed in the `seq_range` list, its **full sequence** will be fetched by default.
+
+
+---
+
+### 2. `align_sequences` Align Real NCBI Sequences 🧬
+
+**2.1 from the first function `fetch_metadata()` we retrieve our seuqences and then we align them with `align_sequences()`.**
+
+```
+test <- 
+  fetch_metadata(
+    accessions = c("NM_001301717", "NM_001301718"),
+    db = "nuccore",
+    seq_range = list(
+      "NM_001301717" = c(50, 150),
+      "NM_001301718" = c(200, 400)
+    )
+  )
+
+# View the sequences
+test$sequence
+#> [1] "GTGGTTGGGCGTAAACGTGGACTTAAACTCAGGAGCTAAGGGGGAAACCAATGAAAAGCGTGCTGGTGGTGGCTCTCCTTGTCATTTTCCAGGTATGCCTG"                                                                      #> [2] "TGCTGGTGGTGGCTCTCCTTGTCATTTTCCAGGTATGCCTGTGTCAAGATGAGGTCACGGACGATTACATCGGAGACAACACCACAGTGGACTACACTTTGTTCGAGTCTTTGTGCTCCAAGAAGGACGTGCGGAACTTTAAAGCCTGGTTCCTCCCTATCATGTACTCCATCATTTGTTTCGTGGGCCTACTGGGCAATG"
+```
+
+**2.2 Align them globally (Needleman–Wunsch)**
+```
+result <- align_sequences(
+  df            = test,
+  method        = "pairwise",
+  pairwise_type = "global"
+)
+
+result$alignment       # alignment object with gaps
+
+#> Global PairwiseAlignmentsSingleSubject (1 of 1)
+
+#> pattern: -----GTGGTTGGGC-----GTAAACGTGGACTT...-----CATTTTCCAGGTATGCCT----------G
+#> subject: TGCTGGTGGTGGCTCTCCTTGTCATTTTCCAGGT...TCCATCATTTGTTTCGTGGGCCTACTGGGCAATG
+
+#> score: -579.9174
+
+result$pid             # Percent identity (`pid`) as a simple similarity score
+#> [1] 34.69388
+
+```
+
+<sup>Created on 2025-06-19 with [reprex v2.1.1](https://reprex.tidyverse.org)</sup>
+
+### 3. `build_nj_tree` Build and Plot a Phylogenetic Tree 🌿 
+
+```
+# 1. Fetch multiple NCBI sequences
+meta <- fetch_metadata(
+  accessions = c("NM_001301717", "NM_001301718", "NM_001301719"),
+  db = "nuccore",
+  seq_range = c(100, 300)  # use same region for comparability
+)
+
+# 2. Multiple sequence alignment (ClustalOmega)
+msa <- align_sequences(
+  df = meta,
+  method = "msa",
+  msa_method = "ClustalOmega"
+)
+
+# 3. Build a Neighbor-Joining tree
+tree <- build_nj_tree(msa)
+
+# 4. Plot the tree
+plot(tree, main = "Neighbor-Joining Tree", cex = 0.8)
+```
+<img align="center" src="build_tree.png" alt="tree logo" width="550" />
  
-### 🚀 Features
-
-- **NCBI Sequence Retrieval**  
-  Retrieve FASTA sequences and metadata directly from NCBI using accession numbers.
-- **Flexible Alignment Options**  
-  - **Pairwise** with `Biostrings::pairwiseAlignment()`  
-  - **Multiple** with `DECIPHER::AlignSeqs()` or `msa::msaClustalOmega()`
-- **Phylogenetic Tree Construction**  
-  Build and visualize NJ, UPGMA, and ML trees with `ape`, `phangorn`, and `ggtree`.
-- **Batch & Parallel Processing**  
-  Accelerate large jobs with parallel execution using `furrr`.
-- **Resume & Caching**  
-  Seamlessly continue interrupted downloads with local caching.
-- **Export Options**  
-  Output results in FASTA, Clustal, NEXUS, Newick, and high-res PDF.
-- **Publication-Quality Plots**  
-  Elegant tree visualizations and annotated alignments with `ggplot2` and `ggtree`.
-

@@ -1,10 +1,8 @@
 
-[![CRAN version](https://img.shields.io/cran/v/blastar.svg)](https://cran.r-project.org/package=blastar)  
-[![R-CMD-check](https://github.com/loukesio/blastar/actions/workflows/r.yml/badge.svg?branch=main)](https://github.com/loukesio/blastar/actions/workflows/r.yml)  
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![CRAN version](https://img.shields.io/cran/v/blastar.svg)](https://cran.r-project.org/package=blastar)  [![R-CMD-check](https://github.com/loukesio/blastar/actions/workflows/r.yml/badge.svg?branch=main)](https://github.com/loukesio/blastar/actions/workflows/r.yml)  [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Install the `blastr` package
-Install the package using the following commands   <img align="right" src="blastar_2000.png" alt="blastar logo" width="70=50" />
+Install the package using the following commands   <img align="right" src="blastar_2000.png" alt="blastar logo" width="550" />
 
 ```r
 # for now, you can install the developmental version of ltc
@@ -49,8 +47,3 @@ Load the library and explore the example datasets!
 - **Publication-Quality Plots**  
   Elegant tree visualizations and annotated alignments with `ggplot2` and `ggtree`.
 
-
-
-
-```r
-install.packages("blastar")

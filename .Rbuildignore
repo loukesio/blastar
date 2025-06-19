@@ -1,3 +1,9 @@
-^.*\.Rproj$
-^\.Rproj\.user$
-^LICENSE\.md$
+^.*\.Rproj$           # Ignore RStudio project files
+^\.Rproj\.user$       # Ignore RStudio project user settings
+^LICENSE\.md$         # Ignore markdown license if unused
+^README_files$        # Ignore README output folders (e.g., from knitr)
+^README\.md$          # Ignore README.md if not needed in the tarball
+
+^\.git$               # Ignore the entire Git directory
+^\.github$            # Ignore GitHub Actions and other configs
+^\.Rcheck$            # Ignore R CMD check output

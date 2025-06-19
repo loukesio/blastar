@@ -11,7 +11,13 @@ RoxygenNote: 7.3.2
 Imports: 
     dplyr,
     rentrez,
-    tibble
+    tibble,
+    Biostrings,
+    ape,
+    msa,
+    pwalign
+Author: Loukas Theodosiou
+Maintainer: Loukas Theodosiou <theodosiou@evolbio.mpg.de>
 Authors@R: person("Loukas", "Theodosiou",
            email = "theodosiou@evolbio.mpg.de",
            role = c("aut", "cre"))

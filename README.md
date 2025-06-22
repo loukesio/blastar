@@ -5,9 +5,9 @@
 ## Install the `blastar` package
 
 *The name **blastar** comes from the Greek word [βλαστάρι](https://el.wiktionary.org/wiki/βλαστάρι), which stands for the fresh, tender shoot of a plant. It evokes the idea of growth, branching, and organic evolution — all essential metaphors for phylogenetic exploration.*
+   <img align="centre" src="blastar_2000.png" alt="blastar logo" width="750" />
 
-Install the package using the following commands   <img align="right" src="blastar_2000.png" alt="blastar logo" width="550" />
-
+Install the package using the following commands
 ```r
 # for now, you can install the developmental version of ltc
 # first you need to install the devtools package 

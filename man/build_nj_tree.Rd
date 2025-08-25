@@ -7,17 +7,17 @@
 build_nj_tree(msa, model = "raw", pairwise.deletion = TRUE)
 }
 \arguments{
-\item{msa}{A multiple alignment object (class `MsaDNAMultipleAlignment` or similar)}
+\item{msa}{A multiple alignment object (class \code{MsaDNAMultipleAlignment} or similar)}
 
-\item{model}{Evolutionary model for distance calculation passed to `ape::dist.dna`
+\item{model}{Evolutionary model for distance calculation passed to \code{ape::dist.dna}
 (e.g., "raw", "JC69", "K80", etc.)}
 
 \item{pairwise.deletion}{Logical. If TRUE, compute distances with pairwise deletion}
 }
 \value{
-An object of class `phylo` (NJ tree)
+An object of class \code{phylo} (NJ tree)
 }
 \description{
 This function takes a Multiple Sequence Alignment (MSA) object (e.g., output of
-`align_sequences(method = "msa")`) and generates a Neighbor-Joining (NJ) tree.
+\code{align_sequences(method = "msa")}) and generates a Neighbor-Joining (NJ) tree.
 }

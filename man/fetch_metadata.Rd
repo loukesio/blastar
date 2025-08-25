@@ -12,15 +12,17 @@ fetch_metadata(accessions, db = c("nuccore", "protein"), seq_range = NULL)
 \item{db}{Either "nuccore" or "protein".}
 
 \item{seq_range}{Either:
-- NULL (default): fetch full sequence for every accession
-- numeric(2):   fetch that same start–end for *all* accessions
-- named list:   each element is a numeric(2) vector, names are accessions;
-                will fetch only that slice for the named accession,
-                full sequence for others.}
+\itemize{
+\item NULL (default): fetch full sequence for every accession
+\item numeric(2):   fetch that same start–end for \emph{all} accessions
+\item named list:   each element is a numeric(2) vector, names are accessions;
+will fetch only that slice for the named accession,
+full sequence for others.
+}}
 }
 \value{
 A tibble with columns
-  `accession`, `accession_version`, `title`, `organism`, `sequence`
+\code{accession}, \code{accession_version}, \code{title}, \code{organism}, \code{sequence}
 }
 \description{
 Fetch Metadata (and optionally sequence ranges) from NCBI

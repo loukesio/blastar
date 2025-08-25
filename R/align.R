@@ -33,12 +33,15 @@
 #' # res_pw <- align_sequences(df, method = "pairwise", pairwise_type = "global")
 #' # res_pw$alignment; res_pw$pid
 #'
-#' # Multiple alignment of all sequences:
-#' # res_msa <- align_sequences(df, method = "msa", msa_method = "ClustalOmega")
-#' # print(res_msa)
+#' # Multiple alignment of all sequences (requires msa package):
+#' \dontrun{
+#' if (requireNamespace("msa", quietly = TRUE)) {
+#'   res_msa <- align_sequences(df, method = "msa", msa_method = "ClustalOmega")
+#'   print(res_msa)
+#' }
+#' }
 #'
 #' @importFrom Biostrings DNAStringSet pairwiseAlignment pid
-#' @importFrom msa msa
 #' @export
 align_sequences <- function(df,
                             method = c("pairwise", "msa"),
@@ -46,7 +49,6 @@ align_sequences <- function(df,
                             msa_method = "ClustalOmega",
                             seq_indices = c(1,2)) {
   method <- match.arg(method)
-
   if (!"sequence" %in% names(df)) {
     stop("Input data must have a 'sequence' column.")
   }
@@ -62,20 +64,24 @@ align_sequences <- function(df,
     if (length(seq_indices) != 2) {
       stop("`seq_indices` must be length 2 for pairwise alignment.")
     }
-
     s1 <- seqs[[seq_indices[1]]]
     s2 <- seqs[[seq_indices[2]]]
-
-    aln <- pwalign::pairwiseAlignment(s1, s2, type = pairwise_type)
-    pid_val <- pwalign::pid(aln)
-
+    aln <- Biostrings::pairwiseAlignment(s1, s2, type = pairwise_type)
+    pid_val <- Biostrings::pid(aln)
     return(list(
       alignment = aln,
       pid       = pid_val
     ))
-
   } else {
-    # Multiple sequence alignment
+    # Multiple sequence alignment - check for msa package
+    if (!requireNamespace("msa", quietly = TRUE)) {
+      stop("Multiple sequence alignment requires the 'msa' package from Bioconductor.\n",
+           "Install it with:\n",
+           "  if (!require('BiocManager', quietly = TRUE)) install.packages('BiocManager')\n",
+           "  BiocManager::install('msa')",
+           call. = FALSE)
+    }
+
     msa_aln <- msa::msa(seqs, method = msa_method)
     return(msa_aln)
   }

@@ -10,7 +10,6 @@
 #' @return An object of class `phylo` (NJ tree)
 #' @importFrom ape as.DNAbin dist.dna nj
 #' @importFrom Biostrings DNAStringSet pairwiseAlignment pid
-#' @importFrom msa msa
 #' @export
 build_nj_tree <- function(msa, model = "raw", pairwise.deletion = TRUE) {
   # Convert MSA to DNAbin

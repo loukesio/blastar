@@ -14,13 +14,17 @@ align_sequences(
 }
 \arguments{
 \item{df}{A tibble or data.frame containing at least:
-- `sequence`: character vector of DNA sequences
-- `accession` (optional): names for each sequence; if present, they will be
-   used as identifiers in the alignment object.}
+\itemize{
+\item \code{sequence}: character vector of DNA sequences
+\item \code{accession} (optional): names for each sequence; if present, they will be
+used as identifiers in the alignment object.
+}}
 
 \item{method}{One of:
-- "pairwise": perform a pairwise alignment between two sequences
-- "msa": perform a multiple sequence alignment on all sequences}
+\itemize{
+\item "pairwise": perform a pairwise alignment between two sequences
+\item "msa": perform a multiple sequence alignment on all sequences
+}}
 
 \item{pairwise_type}{For pairwise only, alignment type: "global" (Needleman–Wunsch),
 "local" (Smith–Waterman), or "overlap".}
@@ -28,13 +32,15 @@ align_sequences(
 \item{msa_method}{For MSA only, method name: "ClustalOmega", "ClustalW", or "Muscle".}
 
 \item{seq_indices}{Integer vector of length 2; indices of the two sequences to align when
-`method = "pairwise"`. Defaults to `c(1,2)`.}
+\code{method = "pairwise"}. Defaults to \code{c(1,2)}.}
 }
 \value{
-If `method="pairwise"`, a list with:
-  - `alignment`: a `PairwiseAlignmentsSingleSubject` object
-  - `pid`: percent identity (numeric)
-  If `method="msa"`, an object of class `MsaDNAMultipleAlignment` or similar.
+If \code{method="pairwise"}, a list with:
+\itemize{
+\item \code{alignment}: a \code{PairwiseAlignmentsSingleSubject} object
+\item \code{pid}: percent identity (numeric)
+If \code{method="msa"}, an object of class \code{MsaDNAMultipleAlignment} or similar.
+}
 }
 \description{
 This function takes a tibble with a "sequence" column (and optional "accession" names)
@@ -52,8 +58,12 @@ alignment (MSA) across all.
 # res_pw <- align_sequences(df, method = "pairwise", pairwise_type = "global")
 # res_pw$alignment; res_pw$pid
 
-# Multiple alignment of all sequences:
-# res_msa <- align_sequences(df, method = "msa", msa_method = "ClustalOmega")
-# print(res_msa)
+# Multiple alignment of all sequences (requires msa package):
+\dontrun{
+if (requireNamespace("msa", quietly = TRUE)) {
+  res_msa <- align_sequences(df, method = "msa", msa_method = "ClustalOmega")
+  print(res_msa)
+}
+}
 
 }

@@ -1,12 +1,13 @@
 
-[![CRAN version](https://img.shields.io/cran/v/blastar.svg)](https://cran.r-project.org/package=blastar) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![CRAN version](https://img.shields.io/cran/v/blastar.svg)](https://cran.r-project.org/package=blastar) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![R-CMD-check](https://github.com/loukesio/blastar/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/loukesio/blastar/actions/workflows/R-CMD-check.yaml)
 
-## Install the `blastr` package
+
+## Install the `blastar` package
 
 *The name **blastar** comes from the Greek word [βλαστάρι](https://el.wiktionary.org/wiki/βλαστάρι), which stands for the fresh, tender shoot of a plant. It evokes the idea of growth, branching, and organic evolution — all essential metaphors for phylogenetic exploration.*
+   <img align="centre" src="blastar_2000.png" alt="blastar logo" width="750" />
 
-Install the package using the following commands   <img align="right" src="blastar_2000.png" alt="blastar logo" width="550" />
-
+Install the package using the following commands
 ```r
 # for now, you can install the developmental version of ltc
 # first you need to install the devtools package 
@@ -16,9 +17,9 @@ install.packages("devtools")
 library(devtools)
 
 # then you can install the dev version of the ltc
-devtools::install_github("loukesio/blastr")
+devtools::install_github("loukesio/blastar")
 # and load it
-library(blastr)
+library(blastar)
 ```
 
 <br>

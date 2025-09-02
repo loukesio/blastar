@@ -1,5 +1,5 @@
 Package: blastar
-Title: BLAST Analysis and Sequence Tools for R
+Title: BLAST and Seqeunce Analsysis Tools
 Version: 0.1.1
 Authors@R: 
     person("Loukas", "Theodosiou", 

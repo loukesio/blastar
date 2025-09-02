@@ -23,23 +23,20 @@
 #'   If `method="msa"`, an object of class `MsaDNAMultipleAlignment` or similar.
 #'
 #' @examples
-#' # Assuming `meta` is your tibble with a `sequence` column:
-#' # df <- tibble::tibble(
-#' #   accession = c("seq1", "seq2", "seq3"),
-#' #   sequence  = c("ATGC...", "AT-C...", "ATGG...")
-#' # )
+#' # Minimal, always-run example (< 5s)
+#' data <- data.frame(
+#'   accession = c("seq1", "seq2"),
+#'   sequence  = c("ACGTACGTACGT", "ACGTACGTTTGT"),
+#'   stringsAsFactors = FALSE
+#' )
 #'
-#' # Pairwise global alignment of first two:
-#' # res_pw <- align_sequences(df, method = "pairwise", pairwise_type = "global")
-#' # res_pw$alignment; res_pw$pid
+#' res_pw <- align_sequences(
+#'   df = data,
+#'   method = "pairwise",
+#'   pairwise_type = "global"
+#' )
+#' res_pw$pid
 #'
-#' # Multiple alignment of all sequences (requires msa package):
-#' \dontrun{
-#' if (requireNamespace("msa", quietly = TRUE)) {
-#'   res_msa <- align_sequences(df, method = "msa", msa_method = "ClustalOmega")
-#'   print(res_msa)
-#' }
-#' }
 #'
 #' @importFrom Biostrings DNAStringSet pairwiseAlignment pid
 #' @export
@@ -86,3 +83,4 @@ align_sequences <- function(df,
     return(msa_aln)
   }
 }
+

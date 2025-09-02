@@ -12,3 +12,5 @@ blastar_2000\.png
 build_tree\.png
 \.gitignore
 R-CMD-check\.yaml
+^CRAN-SUBMISSION$
+^\.Rproj\.user$

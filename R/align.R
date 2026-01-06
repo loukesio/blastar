@@ -51,7 +51,7 @@
 #' }
 #' }
 #'
-#' @importFrom Biostrings DNAStringSet DNAString pid
+#' @importFrom Biostrings DNAStringSet DNAString
 #' @export
 align_sequences <- function(df,
                             method = c("pairwise", "msa"),
@@ -84,13 +84,14 @@ align_sequences <- function(df,
       stop("`seq_indices` must be length 2 for pairwise alignment.")
     }
 
-    # Extract sequences as DNAString objects (not from DNAStringSet)
+    # Extract sequences as DNAString objects
     s1 <- Biostrings::DNAString(as.character(seqs[[seq_indices[1]]]))
     s2 <- Biostrings::DNAString(as.character(seqs[[seq_indices[2]]]))
 
-    # Use pwalign::pairwiseAlignment
+    # Use pwalign for both alignment and pid calculation
     aln <- pwalign::pairwiseAlignment(s1, s2, type = pairwise_type)
-    pid_val <- Biostrings::pid(aln)
+    pid_val <- pwalign::pid(aln)  # CHANGED: Use pwalign::pid instead of Biostrings::pid
+
     return(list(
       alignment = aln,
       pid       = pid_val

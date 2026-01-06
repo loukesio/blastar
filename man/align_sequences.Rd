@@ -49,9 +49,8 @@ alignment (MSA) across all.
 }
 \examples{
 \donttest{
-# Pairwise alignment example (requires Biostrings and pwalign packages)
-if (requireNamespace("Biostrings", quietly = TRUE) &&
-    requireNamespace("pwalign", quietly = TRUE)) {
+# Pairwise alignment example (requires pwalign package)
+if (requireNamespace("pwalign", quietly = TRUE)) {
   data <- data.frame(
     accession = c("seq1", "seq2"),
     sequence  = c("ACGTACGTACGT", "ACGTACGTTTGT"),

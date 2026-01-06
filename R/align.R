@@ -24,9 +24,8 @@
 #'
 #' @examples
 #' \donttest{
-#' # Pairwise alignment example (requires Biostrings and pwalign packages)
-#' if (requireNamespace("Biostrings", quietly = TRUE) &&
-#'     requireNamespace("pwalign", quietly = TRUE)) {
+#' # Pairwise alignment example (requires pwalign package)
+#' if (requireNamespace("pwalign", quietly = TRUE)) {
 #'   data <- data.frame(
 #'     accession = c("seq1", "seq2"),
 #'     sequence  = c("ACGTACGTACGT", "ACGTACGTTTGT"),
@@ -52,7 +51,7 @@
 #' }
 #' }
 #'
-#' @importFrom Biostrings DNAStringSet pairwiseAlignment pid
+#' @importFrom Biostrings DNAStringSet DNAString pid
 #' @export
 align_sequences <- function(df,
                             method = c("pairwise", "msa"),
@@ -71,13 +70,26 @@ align_sequences <- function(df,
   }
 
   if (method == "pairwise") {
+    # Check for pwalign package
+    if (!requireNamespace("pwalign", quietly = TRUE)) {
+      stop("Pairwise alignment requires the 'pwalign' package from Bioconductor.\n",
+           "Install it with:\n",
+           "  if (!require('BiocManager', quietly = TRUE)) install.packages('BiocManager')\n",
+           "  BiocManager::install('pwalign')",
+           call. = FALSE)
+    }
+
     # Ensure two indices
     if (length(seq_indices) != 2) {
       stop("`seq_indices` must be length 2 for pairwise alignment.")
     }
-    s1 <- seqs[[seq_indices[1]]]
-    s2 <- seqs[[seq_indices[2]]]
-    aln <- Biostrings::pairwiseAlignment(s1, s2, type = pairwise_type)
+
+    # Extract sequences as DNAString objects (not from DNAStringSet)
+    s1 <- Biostrings::DNAString(as.character(seqs[[seq_indices[1]]]))
+    s2 <- Biostrings::DNAString(as.character(seqs[[seq_indices[2]]]))
+
+    # Use pwalign::pairwiseAlignment
+    aln <- pwalign::pairwiseAlignment(s1, s2, type = pairwise_type)
     pid_val <- Biostrings::pid(aln)
     return(list(
       alignment = aln,

@@ -70,7 +70,7 @@ If an accession is not listed in the `seq_range` list, its **full sequence** wil
 
 ### 2. `align_sequences` Align Real NCBI Sequences 🧬
 
-**2.1 from the first function `fetch_metadata()` we retrieve our seuqences and then we align them with `align_sequences()`.**
+**2.1 from the first function `fetch_metadata()` we retrieve our sequences and then we align them with `align_sequences()`.**
 
 ```
 test <- 

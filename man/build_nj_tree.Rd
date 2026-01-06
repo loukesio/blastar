@@ -21,3 +21,22 @@ An object of class \code{phylo} (NJ tree)
 This function takes a Multiple Sequence Alignment (MSA) object (e.g., output of
 \code{align_sequences(method = "msa")}) and generates a Neighbor-Joining (NJ) tree.
 }
+\examples{
+\donttest{
+# Build NJ tree from multiple sequence alignment (requires msa package)
+if (requireNamespace("msa", quietly = TRUE)) {
+  # Create example sequences
+  df <- data.frame(
+    accession = c("seq1", "seq2", "seq3"),
+    sequence = c("ATGCATGC", "ATGCTAGC", "ATGGATGC")
+  )
+  
+  # Generate MSA
+  msa_result <- align_sequences(df, method = "msa", msa_method = "ClustalOmega")
+  
+  # Build NJ tree
+  tree <- build_nj_tree(msa_result, model = "raw")
+  print(tree)
+}
+}
+}

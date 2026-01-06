@@ -23,20 +23,34 @@
 #'   If `method="msa"`, an object of class `MsaDNAMultipleAlignment` or similar.
 #'
 #' @examples
-#' # Minimal, always-run example (< 5s)
-#' data <- data.frame(
-#'   accession = c("seq1", "seq2"),
-#'   sequence  = c("ACGTACGTACGT", "ACGTACGTTTGT"),
-#'   stringsAsFactors = FALSE
-#' )
+#' \donttest{
+#' # Pairwise alignment example (requires Biostrings and pwalign packages)
+#' if (requireNamespace("Biostrings", quietly = TRUE) &&
+#'     requireNamespace("pwalign", quietly = TRUE)) {
+#'   data <- data.frame(
+#'     accession = c("seq1", "seq2"),
+#'     sequence  = c("ACGTACGTACGT", "ACGTACGTTTGT"),
+#'     stringsAsFactors = FALSE
+#'   )
 #'
-#' res_pw <- align_sequences(
-#'   df = data,
-#'   method = "pairwise",
-#'   pairwise_type = "global"
-#' )
-#' res_pw$pid
+#'   res_pw <- align_sequences(
+#'     df = data,
+#'     method = "pairwise",
+#'     pairwise_type = "global"
+#'   )
+#'   res_pw$pid
+#' }
 #'
+#' # Multiple sequence alignment (requires msa package)
+#' if (requireNamespace("msa", quietly = TRUE)) {
+#'   data_msa <- data.frame(
+#'     accession = c("seq1", "seq2", "seq3"),
+#'     sequence = c("ATGCATGC", "ATGCTAGC", "ATGGATGC")
+#'   )
+#'   res_msa <- align_sequences(data_msa, method = "msa", msa_method = "ClustalOmega")
+#'   print(res_msa)
+#' }
+#' }
 #'
 #' @importFrom Biostrings DNAStringSet pairwiseAlignment pid
 #' @export
@@ -83,4 +97,3 @@ align_sequences <- function(df,
     return(msa_aln)
   }
 }
-

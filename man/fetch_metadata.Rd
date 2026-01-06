@@ -27,3 +27,15 @@ A tibble with columns
 \description{
 Fetch Metadata (and optionally sequence ranges) from NCBI
 }
+\examples{
+\donttest{
+# Fetch metadata for a nucleotide sequence
+result <- fetch_metadata("NM_000546", db = "nuccore")
+
+# Fetch specific sequence range (positions 1-100)
+result_range <- fetch_metadata("NM_000546", db = "nuccore", seq_range = c(1, 100))
+
+# Fetch multiple accessions
+result_multi <- fetch_metadata(c("NM_000546", "NM_001126"), db = "nuccore")
+}
+}

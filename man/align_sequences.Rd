@@ -48,20 +48,31 @@ and performs either a pairwise alignment between two sequences or a multiple seq
 alignment (MSA) across all.
 }
 \examples{
-# Assuming `meta` is your tibble with a `sequence` column:
-# df <- tibble::tibble(
-#   accession = c("seq1", "seq2", "seq3"),
-#   sequence  = c("ATGC...", "AT-C...", "ATGG...")
-# )
+\donttest{
+# Pairwise alignment example (requires Biostrings and pwalign packages)
+if (requireNamespace("Biostrings", quietly = TRUE) &&
+    requireNamespace("pwalign", quietly = TRUE)) {
+  data <- data.frame(
+    accession = c("seq1", "seq2"),
+    sequence  = c("ACGTACGTACGT", "ACGTACGTTTGT"),
+    stringsAsFactors = FALSE
+  )
 
-# Pairwise global alignment of first two:
-# res_pw <- align_sequences(df, method = "pairwise", pairwise_type = "global")
-# res_pw$alignment; res_pw$pid
+  res_pw <- align_sequences(
+    df = data,
+    method = "pairwise",
+    pairwise_type = "global"
+  )
+  res_pw$pid
+}
 
-# Multiple alignment of all sequences (requires msa package):
-\dontrun{
+# Multiple sequence alignment (requires msa package)
 if (requireNamespace("msa", quietly = TRUE)) {
-  res_msa <- align_sequences(df, method = "msa", msa_method = "ClustalOmega")
+  data_msa <- data.frame(
+    accession = c("seq1", "seq2", "seq3"),
+    sequence = c("ATGCATGC", "ATGCTAGC", "ATGGATGC")
+  )
+  res_msa <- align_sequences(data_msa, method = "msa", msa_method = "ClustalOmega")
   print(res_msa)
 }
 }

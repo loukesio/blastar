@@ -10,6 +10,24 @@
 #' @return An object of class `phylo` (NJ tree)
 #' @importFrom ape as.DNAbin dist.dna nj
 #' @importFrom Biostrings DNAStringSet pairwiseAlignment pid
+#' @examples
+#' \donttest{
+#' # Build NJ tree from multiple sequence alignment (requires msa package)
+#' if (requireNamespace("msa", quietly = TRUE)) {
+#'   # Create example sequences
+#'   df <- data.frame(
+#'     accession = c("seq1", "seq2", "seq3"),
+#'     sequence = c("ATGCATGC", "ATGCTAGC", "ATGGATGC")
+#'   )
+#'   
+#'   # Generate MSA
+#'   msa_result <- align_sequences(df, method = "msa", msa_method = "ClustalOmega")
+#'   
+#'   # Build NJ tree
+#'   tree <- build_nj_tree(msa_result, model = "raw")
+#'   print(tree)
+#' }
+#' }
 #' @export
 build_nj_tree <- function(msa, model = "raw", pairwise.deletion = TRUE) {
   # Convert MSA to DNAbin

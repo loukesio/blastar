@@ -14,6 +14,17 @@
 #' @importFrom rentrez entrez_search entrez_summary entrez_fetch
 #' @importFrom dplyr bind_rows
 #' @importFrom tibble tibble
+#' @examples
+#' \donttest{
+#' # Fetch metadata for a nucleotide sequence
+#' result <- fetch_metadata("NM_000546", db = "nuccore")
+#' 
+#' # Fetch specific sequence range (positions 1-100)
+#' result_range <- fetch_metadata("NM_000546", db = "nuccore", seq_range = c(1, 100))
+#' 
+#' # Fetch multiple accessions
+#' result_multi <- fetch_metadata(c("NM_000546", "NM_001126"), db = "nuccore")
+#' }
 #' @export
 #'
 fetch_metadata <- function(accessions,

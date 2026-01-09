@@ -5,9 +5,13 @@ Authors@R:
     person("Loukas", "Theodosiou", 
            email = "theodosiou@evolbio.mpg.de", 
            role = c("aut", "cre"))
-Description: Provides tools for BLAST analysis, sequence alignment, and phylogenetic 
-    tree construction. Integrates with NCBI databases through the 'rentrez' package 
-    for sequence retrieval and offers multiple sequence alignment capabilities.
+Description: Description: Provides streamlined tools for retrieving sequences from NCBI,
+    performing sequence alignments (pairwise and multiple), and building
+    phylogenetic trees. Implements the Needleman-Wunsch algorithm for global
+    alignment (Needleman & Wunsch (1970) <doi:10.1016/0022-2836(70)90057-4>),
+    Smith-Waterman for local alignment (Smith & Waterman (1981) 
+    <doi:10.1016/0022-2836(81)90087-5>), and Neighbor-Joining for tree
+    construction (Saitou & Nei (1987) <doi:10.1093/oxfordjournals.molbev.a040454>).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
